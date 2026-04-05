@@ -1,10 +1,9 @@
 # Project-BMO
-🤖 Project BMO (Be More)
-"I know that look. You just killed someone... or you're thinking about it."
+Project BMO 
 
-Project BMO is an open-source attempt to bring everyone’s favorite "video game system/friend/roommate" from Adventure Time to life. This project evolves from a simple desktop AI assistant into a fully realized, mobile, autonomous robot.
+Project BMO is an  attempt to bring everyone’s favorite "video game system/friend/roommate" from Adventure Time to life. This project evolves from a simple desktop AI assistant into a robot.
 
-🌟 Features
+Features
 Pro-Personality: Driven by LLMs with a custom-tuned BMO persona.
 
 Expressive UI: A dynamic facial system that reacts to conversation sentiment.
@@ -13,7 +12,8 @@ Voice-First Interaction: Wake-word detection and high-fidelity TTS.
 
 Modular Hardware: Designed for Raspberry Pi with 3D-printable enclosures.
 
-🚀 Roadmap
+Roadmap:
+
 [ ] Phase 1: Core Logic & Facial Expressions (In Progress)
 
 [ ] Phase 2: Voice Processing & Vision
@@ -24,7 +24,7 @@ Modular Hardware: Designed for Raspberry Pi with 3D-printable enclosures.
 
 [ ] Phase 5: Retro-Gaming Integration
 
-🛠 Tech Stack
+ Tech Stack
 Language: Python 3.10+
 
 AI: Ollama / OpenAI API / LangChain
