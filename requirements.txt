@@ -1,0 +1,5 @@
+pygame>=2.5.0
+vaderSentiment>=3.3.2
+python-dotenv>=1.0.0
+ollama>=0.2.0
+openai>=1.0.0   # optional: fallback backend
