@@ -33,8 +33,16 @@ KEYWORD_RULES: list[tuple[str, str]] = [
     # Sleeping / tired
     (r"\bzzz\b|\bsleeping\b|\bsleep\b|\btired\b", "sleeping"),
 
-    # Surprised / shocked
-    (r"wh?oa+!|\bomg\b|\boh my\b|\bno way\b|\bwhat!\b|\bgasp\b", "surprised"),
+    # New exact matches/emoticons (escape properly)
+    (r"(:D|\bxd\b|\bwide grin\b)", "wide_smile"),
+    (r"(D:|shocked|gasp|horrified)", "shocked"),
+    (r"(-_-|\bflat\b|\bbored\b|\bwhatever\b|\bmeh\b)", "flat"),
+    (r"(\bdizzy\b|\bconfused\b|\bspinning\b|\bwoozy\b)", "dizzy"),
+    (r"(\blove\b|<3|\bheart\b|\badores?\b)", "love"),
+    (r"(\bcrying\b|\bcry\b|\bsobbing\b|\btears\b)", "crying"),
+
+    # Surprised / shocked (fallback from D:)
+    (r"wh?oa+!|\bomg\b|\boh my\b|\bno way\b|\bwhat!\b", "surprised"),
 
     # Excited (very positive, many exclamation marks, or explicit words)
     (r"\byes! yes!\b|\boh! oh!\b|\byes+!\b|\bwoo+\b|\bamazing!\b|\bincredible!\b", "excited"),

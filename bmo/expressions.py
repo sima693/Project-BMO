@@ -26,4 +26,10 @@ EXPRESSION_ANIMS: dict[str, dict] = {
     "talking":   {"bounce": False, "zzz": False},
     "excited":   {"bounce": True,  "zzz": False},
     "listening": {"bounce": False, "zzz": False},
+    "flat":      {"bounce": False, "zzz": False},
+    "wide_smile":{"bounce": True,  "zzz": False},
+    "shocked":   {"bounce": True,  "zzz": False},
+    "dizzy":     {"bounce": False, "zzz": False},
+    "love":      {"bounce": True,  "zzz": False},
+    "crying":    {"bounce": False, "zzz": False},
 }
