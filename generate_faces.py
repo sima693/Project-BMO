@@ -158,6 +158,68 @@ def d_listening(): # Similar to neutral but eyebrows up or just neutral
     draw.line([W//2 - 10, H//2 + 10, W//2 + 10, H//2 + 10], fill=FG_COLOR, width=4)
     save(img, "listening")
 
+def d_flat(): # -_-
+    img = Image.new('RGBA', (W, H), (0,0,0,0)); draw = ImageDraw.Draw(img)
+    draw.line([W//2 - 55, H//2 - 5, W//2 - 15, H//2 - 5], fill=FG_COLOR, width=4)
+    draw.line([W//2 + 15, H//2 - 5, W//2 + 55, H//2 - 5], fill=FG_COLOR, width=4)
+    draw.line([W//2 - 15, H//2 + 25, W//2 + 15, H//2 + 25], fill=FG_COLOR, width=4)
+    save(img, "flat")
+
+def d_wide_smile(): # :D
+    img = Image.new('RGBA', (W, H), (0,0,0,0)); draw = ImageDraw.Draw(img)
+    draw_eye(draw, W//2 - 40, H//2 - 25)
+    draw_eye(draw, W//2 + 40, H//2 - 25)
+    draw.chord([W//2 - 35, H//2 - 15, W//2 + 35, H//2 + 45], 0, 180, fill=FG_COLOR)
+    save(img, "wide_smile")
+
+def d_shocked(): # D:
+    img = Image.new('RGBA', (W, H), (0,0,0,0)); draw = ImageDraw.Draw(img)
+    draw_eye(draw, W//2 - 40, H//2 - 15, radius=5)
+    draw_eye(draw, W//2 + 40, H//2 - 15, radius=5)
+    draw.ellipse([W//2 - 18, H//2 + 5, W//2 + 18, H//2 + 45], fill=FG_COLOR)
+    save(img, "shocked")
+
+def d_dizzy():
+    img = Image.new('RGBA', (W, H), (0,0,0,0)); draw = ImageDraw.Draw(img)
+    # spiral eyes using concentric circles for simplicity
+    def dizzy_eye(cx, cy):
+        draw.arc([cx-5, cy-5, cx+5, cy+5], 0, 360, fill=FG_COLOR, width=3)
+        draw.arc([cx-12, cy-12, cx+12, cy+12], 0, 360, fill=FG_COLOR, width=3)
+        draw.arc([cx-20, cy-20, cx+20, cy+20], 0, 360, fill=FG_COLOR, width=3)
+    dizzy_eye(W//2 - 45, H//2 - 10)
+    dizzy_eye(W//2 + 45, H//2 - 10)
+    # wavy mouth
+    draw.arc([W//2 - 20, H//2 + 15, W//2, H//2 + 30], 180, 360, fill=FG_COLOR, width=4)
+    draw.arc([W//2, H//2 + 15, W//2 + 20, H//2 + 30], 0, 180, fill=FG_COLOR, width=4)
+    save(img, "dizzy")
+
+def d_love():
+    img = Image.new('RGBA', (W, H), (0,0,0,0)); draw = ImageDraw.Draw(img)
+    # heart eyes
+    def draw_heart(cx, cy, radius):
+        draw.polygon([(cx, cy+radius), (cx-radius, cy-radius*0.2), (cx, cy-radius*0.8), (cx+radius, cy-radius*0.2)], fill=RED)
+        draw.ellipse([cx-radius, cy-radius, cx, cy], fill=RED)
+        draw.ellipse([cx, cy-radius, cx+radius, cy], fill=RED)
+    draw_heart(W//2 - 40, H//2 - 15, 16)
+    draw_heart(W//2 + 40, H//2 - 15, 16)
+    draw.arc([W//2 - 15, H//2 + 10, W//2 + 15, H//2 + 30], 0, 180, fill=FG_COLOR, width=4)
+    save(img, "love")
+
+def d_crying():
+    img = Image.new('RGBA', (W, H), (0,0,0,0)); draw = ImageDraw.Draw(img)
+    TEAR_COLOR = (130, 215, 235)
+    # squint up eyes 'n n'
+    draw.arc([W//2 - 50, H//2 - 15, W//2 - 30, H//2 + 5], 180, 360, fill=FG_COLOR, width=4)
+    draw.arc([W//2 + 30, H//2 - 15, W//2 + 50, H//2 + 5], 180, 360, fill=FG_COLOR, width=4)
+    # streams of tears
+    draw.line([W//2 - 45, H//2, W//2 - 50, H//2 + 30], fill=TEAR_COLOR, width=6, joint="curve")
+    draw.line([W//2 - 35, H//2, W//2 - 30, H//2 + 40], fill=TEAR_COLOR, width=6, joint="curve")
+    draw.line([W//2 + 45, H//2, W//2 + 50, H//2 + 30], fill=TEAR_COLOR, width=6, joint="curve")
+    draw.line([W//2 + 35, H//2, W//2 + 30, H//2 + 40], fill=TEAR_COLOR, width=6, joint="curve")
+    # sad mouth
+    draw.arc([W//2 - 20, H//2 + 15, W//2 + 20, H//2 + 40], 180, 360, fill=FG_COLOR, width=4)
+    save(img, "crying")
+
 # Call all
 d_neutral()
 d_happy()
@@ -173,4 +235,10 @@ d_surprised()
 d_talking()
 d_excited()
 d_listening()
+d_flat()
+d_wide_smile()
+d_shocked()
+d_dizzy()
+d_love()
+d_crying()
 print("Generated face PNGs.")

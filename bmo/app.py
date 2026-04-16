@@ -99,7 +99,10 @@ def run():
                         input_text = ""
                         stream_text = ""
                         app_state = STATE_THINKING
-                        target_expr = "thinking"
+                        
+                        # Set BMO's face to match the USER'S sentiment!
+                        target_expr = sentiment.analyze(msg)
+                        
                         threading.Thread(target=_ai_worker, args=(ai_engine, msg, result_q), daemon=True).start()
                 elif event.key == pygame.K_BACKSPACE:
                     if pygame.key.get_mods() & pygame.KMOD_CTRL:
@@ -115,7 +118,7 @@ def run():
                 elif event.unicode and len(input_text) < 200:
                     if app_state == STATE_IDLE:
                         input_text += event.unicode
-                        target_expr = "listening"
+                        # We no longer switch to 'listening' so it retains the emotion seamlessly
 
         try:
             while True:
@@ -124,33 +127,21 @@ def run():
                     stream_text += item[1]
                     if app_state == STATE_THINKING:
                         app_state = STATE_TALKING
-                        target_expr = "talking"
                 elif item[0] == "done":
                     full_response = item[1]
-                    expr = sentiment.analyze(full_response)
                     chat_log.append(("bmo", full_response))
                     stream_text = ""
-                    target_expr = expr
-                    app_state = STATE_TALKING
-                    hold_timer = max(2.5, 0.065 * len(full_response.split()))
+                    app_state = STATE_IDLE  # End of speech
                 elif item[0] == "error":
                     chat_log.append(("bmo", item[1]))
                     stream_text = ""
                     target_expr = "sad"
-                    app_state = STATE_TALKING
-                    hold_timer = 3.0
+                    app_state = STATE_IDLE
         except queue.Empty:
             pass
 
-        if app_state == STATE_TALKING and not stream_text:
-            hold_timer -= dt
-            if hold_timer <= 0:
-                app_state = STATE_IDLE
-                target_expr = "neutral"
-                hold_timer = 0.0
-
-        if app_state == STATE_IDLE and target_expr == "listening" and not input_text:
-            target_expr = "neutral"
+        # No more hold_timer or listening face reverting!
+        # The face stays still and locked in target_expr until the user submits new text.
 
         anim = EXPRESSION_ANIMS.get(target_expr, {})
 
@@ -186,8 +177,9 @@ def run():
             cursor_visible = not cursor_visible
 
         # Simple talking animation state oscillation
-        if render_expr == "talking" and stream_text:
-            # swap between talking and neutral
+        # Only flap the mouth if the target is exactly "neutral" or "talking", 
+        # protecting emotional faces from being overridden by the talking frame.
+        if stream_text and target_expr in ("neutral", "talking"):
             if math.sin(now * 15) > 0:
                 render_expr = "talking"
             else:
