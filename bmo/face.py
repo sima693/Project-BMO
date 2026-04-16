@@ -268,23 +268,67 @@ class FaceRenderer:
         entries = list(chat_log[-4:])
         if streaming_text: entries.append(("bmo", streaming_text + "▌"))
 
-        y = CHAT_Y + 10
         available_w = WIN_W - 56
-
+        
+        # Pre-measure layout to handle scrolling
+        layout = []
         for role, text in entries:
             lbl_txt, log_col = ("YOU", C_TEXT_USER) if role == "user" else ("BMO", C_TEXT_BMO)
             label = self._font_label.render(lbl_txt, True, C_TEXT_DIM)
-            lx = WIN_W - 28 - label.get_width() if role == "user" else 28
-            self.surface.blit(label, (lx, y))
-            y += label.get_height() + 1
-            y = _draw_text_wrapped(self.surface, text, self._font_chat, log_col, 28, y, available_w)
-            y += 4
+            
+            words = text.split()
+            lines = []
+            current = ""
+            for word in words:
+                test = (current + " " + word).strip()
+                if self._font_chat.size(test)[0] <= available_w:
+                    current = test
+                else:
+                    if current: lines.append(current)
+                    current = word
+            if current: lines.append(current)
+            
+            line_surfs = [self._font_chat.render(line, True, log_col) for line in lines]
+            layout.append((role, label, line_surfs))
 
+        # Calculate total height
+        total_h = 0
+        for role, label, line_surfs in layout:
+            total_h += label.get_height() + 1
+            for ls in line_surfs:
+                total_h += ls.get_height() + 4
+            total_h += 4
+            
+        thinking_surf = None
         if app_state == "thinking" and not streaming_text:
             import time
             dots = "•" * (int(time.time() * 2) % 4) or " "
             thinking_surf = self._font_chat.render(f"BMO is thinking {dots}", True, C_THINKING_DOT)
-            self.surface.blit(thinking_surf, (28, min(y, CHAT_Y + CHAT_H - thinking_surf.get_height() - 8)))
+            total_h += thinking_surf.get_height() + 8
+            
+        # Determine starting y (scroll up if content exceeds box)
+        start_y = CHAT_Y + 10
+        if total_h > (CHAT_H - 20):
+            start_y = (CHAT_Y + CHAT_H - 10) - total_h
+            
+        # Draw with clipping to prevent spilling into input box
+        old_clip = self.surface.get_clip()
+        self.surface.set_clip(area_rect.inflate(-4, -4))
+        
+        y = start_y
+        for role, label, line_surfs in layout:
+            lx = WIN_W - 28 - label.get_width() if role == "user" else 28
+            self.surface.blit(label, (lx, y))
+            y += label.get_height() + 1
+            for ls in line_surfs:
+                self.surface.blit(ls, (28, y))
+                y += ls.get_height() + 4
+            y += 4
+            
+        if thinking_surf:
+            self.surface.blit(thinking_surf, (28, y))
+            
+        self.surface.set_clip(old_clip)
 
     def _draw_input_box(self, input_text, cursor_visible, app_state):
         box_rect = pygame.Rect(10, INPUT_Y, WIN_W - 20, INPUT_H)
