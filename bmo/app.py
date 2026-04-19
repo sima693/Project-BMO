@@ -99,6 +99,7 @@ def run():
                         input_text = ""
                         stream_text = ""
                         app_state = STATE_THINKING
+                        renderer.chat_scroll = 0  # Snap to bottom
                         
                         # Set BMO's face to match the USER'S sentiment!
                         target_expr = sentiment.analyze(msg)
@@ -115,10 +116,13 @@ def run():
                     ai_engine.clear_history()
                     chat_log.clear()
                     stream_text = ""
+                    renderer.chat_scroll = 0
                 elif event.unicode and len(input_text) < 200:
                     if app_state == STATE_IDLE:
                         input_text += event.unicode
                         # We no longer switch to 'listening' so it retains the emotion seamlessly
+            elif event.type == pygame.MOUSEWHEEL:
+                renderer.chat_scroll += event.y * 30
 
         try:
             while True:

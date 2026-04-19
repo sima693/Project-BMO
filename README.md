@@ -37,7 +37,7 @@ ollama serve          # keep this running in a separate terminal
 
 ### 2 — Clone & install Python packages
 ```bash
-git clone https://github.com/your-username/Project-BMO.git
+git clone https://github.com/sima693/Project-BMO.git
 cd Project-BMO
 pip install -r requirements.txt
 ```

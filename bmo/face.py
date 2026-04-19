@@ -149,6 +149,7 @@ class FaceRenderer:
         self.faces = {}
         self._load_faces()
         self._scanlines = self._build_scanlines()
+        self.chat_scroll = 0
 
     def _load_faces(self):
         faces_dir = os.path.join("assets", "faces")
@@ -265,7 +266,7 @@ class FaceRenderer:
         _draw_rounded_rect(self.surface, C_CHAT_BG, area_rect, 10)
         _draw_rounded_rect(self.surface, C_CHAT_BORDER, area_rect, 10, width=1)
 
-        entries = list(chat_log[-4:])
+        entries = list(chat_log[-50:])
         if streaming_text: entries.append(("bmo", streaming_text + "▌"))
 
         available_w = WIN_W - 56
@@ -309,7 +310,11 @@ class FaceRenderer:
         # Determine starting y (scroll up if content exceeds box)
         start_y = CHAT_Y + 10
         if total_h > (CHAT_H - 20):
-            start_y = (CHAT_Y + CHAT_H - 10) - total_h
+            max_scroll = total_h - (CHAT_H - 20)
+            self.chat_scroll = max(0, min(self.chat_scroll, max_scroll))
+            start_y = (CHAT_Y + CHAT_H - 10) - total_h + self.chat_scroll
+        else:
+            self.chat_scroll = 0
             
         # Draw with clipping to prevent spilling into input box
         old_clip = self.surface.get_clip()
